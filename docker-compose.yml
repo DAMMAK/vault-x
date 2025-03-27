@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    command: npm run start:dev
+    env_file:
+      - .env
+    depends_on:
+      - riak
+      - redis
+
+  riak:
+    image: basho/riak-kv
+    ports:
+      - '8087:8087'
+      - '8098:8098'
+    environment:
+      - CLUSTER_NAME=riakts
+    volumes:
+      - riak-data:/var/lib/riak
+
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  riak-data:
+  redis-data:
