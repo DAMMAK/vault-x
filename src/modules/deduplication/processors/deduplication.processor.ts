@@ -6,8 +6,8 @@ import { DeduplicationService } from '../deduplication.service';
 import { DeduplicationJob } from '../interfaces/deduplication-job.interface';
 import { FilesService } from '../../files/files.service';
 import { StorageService } from '../../storage/storage.service';
-import { File } from '../../files/interfaces/file.interface';
-import { Chunk } from '../../files/interfaces/chunk.interface';
+import { File } from 'src/modules/files/entities/file.entity';
+import { Chunk } from 'src/modules/files/entities/chunk.entity';
 
 @Processor(QUEUES.DEDUPLICATION)
 export class DeduplicationProcessor {

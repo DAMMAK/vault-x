@@ -2,20 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ConfigService } from '@nestjs/config';
-import {
-  FILE_STATUS,
-  QUEUES,
-  REPLICATION_STATUS,
-  RIAK_BUCKETS,
-} from '@common/constants';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FILE_STATUS, QUEUES, REPLICATION_STATUS } from '@common/constants';
 import { ReplicationPolicyDto } from './dto/replication-policy.dto';
 import { ReplicationJob } from './interfaces/replication-job.interface';
 import { FilesService } from '../files/files.service';
 import { StorageService } from '../storage/storage.service';
 import { HashUtil } from '@common/utils/hash.util';
-import { File } from '../files/interfaces/file.interface';
-import { StorageNode } from '../storage/interfaces/storage-node.interface';
-import * as Riak from 'basho-riak-client';
+import { File } from '../files/entities/file.entity';
+import { StorageNode } from '../storage/entities/storage-node.entity';
+import { Chunk } from '../files/entities/chunk.entity';
 
 @Injectable()
 export class ReplicationService {
@@ -25,6 +22,10 @@ export class ReplicationService {
     private configService: ConfigService,
     private filesService: FilesService,
     private storageService: StorageService,
+    @InjectRepository(File)
+    private filesRepository: Repository<File>,
+    @InjectRepository(Chunk)
+    private chunksRepository: Repository<Chunk>,
     @InjectQueue(QUEUES.REPLICATION) private replicationQueue: Queue,
   ) {}
 
@@ -127,9 +128,6 @@ export class ReplicationService {
         await Promise.all(
           file.chunks.map(async (chunk) => {
             const chunkData = await this.filesService.getChunkData(chunk.id);
-            // In a real implementation, this would use a specific storage mechanism
-            // for the target node, which might involve network transfer,
-            // cloud storage API, or other distribution method
             await this.saveChunkToNode(targetNode, chunk.id, chunkData);
           }),
         );
@@ -189,7 +187,7 @@ export class ReplicationService {
       );
 
       // Create a new file entry for the chunk in the target region
-      const chunkFile: File = {
+      const chunkFile = this.filesRepository.create({
         id: chunkId, // Use the existing chunk ID
         name: `chunk_${chunkId}`,
         originalName: `chunk_${chunkId}`,
@@ -205,19 +203,20 @@ export class ReplicationService {
         deduplicationEnabled: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
+      });
 
       // Save the chunk file metadata
-      await this.filesService.saveFile(chunkFile);
+      await this.filesRepository.save(chunkFile);
 
+      const _chunk: Partial<Chunk> = {
+        id: chunkId,
+        data: chunkData,
+        storageNodeId: node.id,
+      };
       // Save the chunk data
-      const storeOp = new Riak.Commands.KV.StoreValue.Builder()
-        .withBucket(RIAK_BUCKETS.CHUNKS)
-        .withKey(chunkId)
-        .withContent(chunkData)
-        .build();
+      const chunk = this.chunksRepository.create(_chunk);
 
-      await this.filesService.executeRiakOperation(storeOp);
+      await this.chunksRepository.save(chunk);
 
       // Optionally update storage node capacity
       node.available -= chunkData.length;
@@ -230,8 +229,5 @@ export class ReplicationService {
       this.logger.error(`Failed to save chunk ${chunkId}: ${error.message}`);
       throw error;
     }
-  }
-  replicateFile(fileId: any, targetRegion: any) {
-    throw new Error('Method not implemented.');
   }
 }

@@ -30,24 +30,28 @@ A scalable, secure, and highly available object storage solution designed to sto
 ## Features
 
 - **Multi-Region Support with Replication**
+
   - Data replication across multiple regions for high availability
   - Configurable replication policies
   - Support for both eventual and strong consistency models
   - Automatic failover and disaster recovery
 
 - **Chunk-Based Storage for Large Files**
+
   - Large files are divided into smaller, fixed-size chunks
   - Distributed storage across multiple nodes
   - Parallel uploads and downloads for improved performance
   - Automatic reassembly upon retrieval
 
 - **Secure Access via Signed URLs**
+
   - Temporary signed URLs for controlled access
   - Fine-grained permission settings
   - Integration with authentication and authorization
   - Access logging and monitoring
 
 - **Data Compression and Deduplication**
+
   - Automatic compression to reduce storage costs
   - Content-aware deduplication to avoid redundant storage
   - Hash-based indexing for efficient duplicate detection
@@ -77,22 +81,26 @@ A scalable, secure, and highly available object storage solution designed to sto
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/your-username/distributed-file-storage.git
 cd distributed-file-storage
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env` file based on the example:
+
 ```bash
 cp .env.example .env
 ```
 
 4. Start the application using Docker Compose:
+
 ```bash
 docker-compose up -d
 ```
@@ -155,6 +163,7 @@ The system consists of several key components:
 ### Creating a File
 
 1. Create a file entry:
+
 ```bash
 curl -X POST http://localhost:3000/api/files \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -170,6 +179,7 @@ curl -X POST http://localhost:3000/api/files \
 ```
 
 2. Upload file chunks:
+
 ```bash
 curl -X POST http://localhost:3000/api/files/FILE_ID/chunks/0 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -178,6 +188,7 @@ curl -X POST http://localhost:3000/api/files/FILE_ID/chunks/0 \
 ```
 
 3. Generate a signed URL for download:
+
 ```bash
 curl -X POST http://localhost:3000/api/files/FILE_ID/signed-url \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -447,11 +458,13 @@ docker-compose up -d
 For production environments, Kubernetes is recommended:
 
 1. Build container images:
+
 ```bash
 docker build -t distributed-file-storage:latest .
 ```
 
 2. Apply Kubernetes manifests (example):
+
 ```bash
 kubectl apply -f k8s/
 ```

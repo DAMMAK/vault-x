@@ -1,27 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as Riak from 'basho-riak-client';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { StorageNode } from './interfaces/storage-node.interface';
-import { Region } from './interfaces/region.interface';
+import { StorageNode } from './entities/storage-node.entity';
+import { Region } from './entities/region.entity';
 import { CreateStorageNodeDto } from './dto/create-storage-node.dto';
 import { CreateRegionDto } from './dto/create-region.dto';
-import { RIAK_BUCKETS } from '@common/constants/index';
 import { File } from '../files/entities/file.entity';
 
 @Injectable()
 export class StorageService {
-  private client: any;
-
-  constructor(private configService: ConfigService) {
-    const riakNodes = this.configService.get('riak.nodes');
-    const riakProtocol = this.configService.get('riak.protocol');
-
-    this.client = new Riak.Client(riakNodes, riakProtocol);
-  }
+  constructor(
+    @InjectRepository(Region)
+    private regionsRepository: Repository<Region>,
+    @InjectRepository(StorageNode)
+    private storageNodesRepository: Repository<StorageNode>,
+    @InjectRepository(File)
+    private filesRepository: Repository<File>,
+  ) {}
 
   async createRegion(createRegionDto: CreateRegionDto): Promise<Region> {
-    const newRegion: Region = {
+    const newRegion = this.regionsRepository.create({
       id: uuidv4(),
       name: createRegionDto.name,
       description: createRegionDto.description,
@@ -29,43 +28,30 @@ export class StorageService {
       active: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    });
 
-    await this.saveRegion(newRegion);
+    await this.regionsRepository.save(newRegion);
 
     return newRegion;
   }
 
   async getRegions(): Promise<Region[]> {
-    const fetchOp = new Riak.Commands.KV.ListKeys.Builder()
-      .withBucket(RIAK_BUCKETS.REGIONS)
-      .build();
-
-    const keys = await this.executeRiakOperation(fetchOp);
-    const regions = await Promise.all(
-      keys.map((key) => this.getRegionById(key)),
-    );
-
-    return regions.filter((region) => region.active);
+    return this.regionsRepository.findBy({ active: true });
   }
 
   async getRegionById(id: string): Promise<Region> {
-    const fetchOp = new Riak.Commands.KV.FetchValue.Builder()
-      .withBucket(RIAK_BUCKETS.REGIONS)
-      .withKey(id)
-      .build();
-
-    const result = await this.executeRiakOperation(fetchOp);
-    if (!result.values || result.values.length === 0) {
+    const region = await this.regionsRepository.findOneBy({ id });
+    if (!region) {
       throw new NotFoundException(`Region with ID ${id} not found`);
     }
-
-    return result.values[0].value;
+    return region;
   }
 
   async getRegionByName(name: string): Promise<Region> {
-    const regions = await this.getRegions();
-    const region = regions.find((r) => r.name === name);
+    const region = await this.regionsRepository.findOneBy({
+      name,
+      active: true,
+    });
 
     if (!region) {
       throw new NotFoundException(`Region with name ${name} not found`);
@@ -78,9 +64,7 @@ export class StorageService {
     const region = await this.getRegionById(id);
 
     region.active = false;
-    region.updatedAt = new Date().toISOString();
-
-    await this.saveRegion(region);
+    await this.regionsRepository.save(region);
 
     return region;
   }
@@ -91,7 +75,7 @@ export class StorageService {
     // Verify region exists
     await this.getRegionById(createStorageNodeDto.regionId);
 
-    const newNode: StorageNode = {
+    const newNode = this.storageNodesRepository.create({
       id: uuidv4(),
       name: createStorageNodeDto.name,
       hostname: createStorageNodeDto.hostname,
@@ -102,43 +86,30 @@ export class StorageService {
       status: 'online',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    });
 
-    await this.saveStorageNode(newNode);
+    await this.storageNodesRepository.save(newNode);
 
     return newNode;
   }
 
   async getStorageNodes(): Promise<StorageNode[]> {
-    const fetchOp = new Riak.Commands.KV.ListKeys.Builder()
-      .withBucket(RIAK_BUCKETS.STORAGE_NODES)
-      .build();
-
-    const keys = await this.executeRiakOperation(fetchOp);
-    const nodes = await Promise.all(
-      keys.map((key) => this.getStorageNodeById(key)),
-    );
-
-    return nodes.filter((node) => node.status === 'online');
+    return this.storageNodesRepository.findBy({ status: 'online' });
   }
 
   async getStorageNodeById(id: string): Promise<StorageNode> {
-    const fetchOp = new Riak.Commands.KV.FetchValue.Builder()
-      .withBucket(RIAK_BUCKETS.STORAGE_NODES)
-      .withKey(id)
-      .build();
-
-    const result = await this.executeRiakOperation(fetchOp);
-    if (!result.values || result.values.length === 0) {
+    const node = await this.storageNodesRepository.findOneBy({ id });
+    if (!node) {
       throw new NotFoundException(`Storage node with ID ${id} not found`);
     }
-
-    return result.values[0].value;
+    return node;
   }
 
   async getStorageNodesInRegion(regionId: string): Promise<StorageNode[]> {
-    const nodes = await this.getStorageNodes();
-    return nodes.filter((node) => node.regionId === regionId);
+    return this.storageNodesRepository.findBy({
+      regionId,
+      status: 'online',
+    });
   }
 
   async updateStorageNodeStatus(
@@ -148,51 +119,17 @@ export class StorageService {
     const node = await this.getStorageNodeById(id);
 
     node.status = status;
-    node.updatedAt = new Date().toISOString();
 
-    await this.saveStorageNode(node);
+    await this.storageNodesRepository.save(node);
 
     return node;
   }
 
-  private async saveRegion(region: Region): Promise<void> {
-    const storeOp = new Riak.Commands.KV.StoreValue.Builder()
-      .withBucket(RIAK_BUCKETS.REGIONS)
-      .withKey(region.id)
-      .withContent(region)
-      .build();
-
-    await this.executeRiakOperation(storeOp);
-  }
-
   async saveStorageNode(node: StorageNode): Promise<void> {
-    const storeOp = new Riak.Commands.KV.StoreValue.Builder()
-      .withBucket(RIAK_BUCKETS.STORAGE_NODES)
-      .withKey(node.id)
-      .withContent(node)
-      .build();
-
-    await this.executeRiakOperation(storeOp);
+    await this.storageNodesRepository.save(node);
   }
 
-  private executeRiakOperation(operation: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.client.execute(operation, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  }
   private async saveFile(file: File): Promise<void> {
-    const storeOp = new Riak.Commands.KV.StoreValue.Builder()
-      .withBucket(RIAK_BUCKETS.FILES)
-      .withKey(file.id)
-      .withContent(file)
-      .build();
-
-    await this.executeRiakOperation(storeOp);
+    await this.filesRepository.save(file);
   }
 }

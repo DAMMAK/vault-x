@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesController } from './files.controller';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { QUEUES } from '@common/constants/index';
 import { StorageModule } from '../storage/storage.module';
 import { ChunkUtil } from '@common/utils/chunks.util';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Chunk } from './entities/chunk.entity';
 
 @Module({
   imports: [
     ConfigModule,
     StorageModule,
+    TypeOrmModule.forFeature([File, Chunk]),
+
     BullModule.registerQueue({
       name: QUEUES.UPLOAD,
     }),
@@ -19,7 +23,7 @@ import { ChunkUtil } from '@common/utils/chunks.util';
     }),
   ],
   controllers: [FilesController],
-  providers: [FilesService, ChunkUtil],
+  providers: [FilesService, ChunkUtil, ConfigService],
   exports: [FilesService],
 })
 export class FilesModule {}

@@ -3,25 +3,21 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as Riak from 'basho-riak-client';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './interfaces/user.interface';
-import { RIAK_BUCKETS } from '@common/constants/index';
+import { User } from './entities/user.entity';
+import { UserResponse } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private client: any;
-
-  constructor(private configService: ConfigService) {
-    const riakNodes = this.configService.get('riak.nodes');
-    const riakProtocol = this.configService.get('riak.protocol');
-
-    this.client = new Riak.Client(riakNodes, riakProtocol);
-  }
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.findByEmail(createUserDto.email);
@@ -31,7 +27,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    const newUser: User = {
+    const newUser = this.usersRepository.create({
       id: uuidv4(),
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
@@ -41,23 +37,16 @@ export class UsersService {
       roles: ['user'],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    });
 
-    await this.saveUser(newUser);
+    await this.usersRepository.save(newUser);
 
-    // Don't return the password
-    const { password, ...result } = newUser;
+    const { ...result } = newUser;
     return result as User;
   }
 
   async findAll(): Promise<User[]> {
-    const fetchOp = new Riak.Commands.KV.ListKeys.Builder()
-      .withBucket(RIAK_BUCKETS.USERS)
-      .build();
-
-    const keys = await this.executeRiakOperation(fetchOp);
-    const users = await Promise.all(keys.map((key) => this.findOne(key)));
-
+    const users = await this.usersRepository.find();
     return users.map((user) => {
       const { password, ...result } = user;
       return result as User;
@@ -65,31 +54,21 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const fetchOp = new Riak.Commands.KV.FetchValue.Builder()
-      .withBucket(RIAK_BUCKETS.USERS)
-      .withKey(id)
-      .build();
-
-    const result = await this.executeRiakOperation(fetchOp);
-    if (!result.values || result.values.length === 0) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-
-    return result.values[0].value;
+    return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    try {
-      // In a real implementation, we'd use secondary indexes or search
-      // For simplicity, we're doing a full scan (not efficient for production)
-      const users = await this.findAll();
-      return users.find((user) => user.email === email) || null;
-    } catch (error) {
-      return null;
-    }
+    return this.usersRepository.findOne({ where: { email } });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponse> {
     const user = await this.findOne(id);
 
     const updatedUser = {
@@ -102,40 +81,17 @@ export class UsersService {
       updatedUser.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
-    await this.saveUser(updatedUser);
+    await this.usersRepository.save(updatedUser);
 
     const { password, ...result } = updatedUser;
-    return result as User;
+    var response: UserResponse = { ...result };
+    return response;
   }
 
   async remove(id: string): Promise<void> {
-    const deleteOp = new Riak.Commands.KV.DeleteValue.Builder()
-      .withBucket(RIAK_BUCKETS.USERS)
-      .withKey(id)
-      .build();
-
-    await this.executeRiakOperation(deleteOp);
-  }
-
-  private async saveUser(user: User): Promise<void> {
-    const storeOp = new Riak.Commands.KV.StoreValue.Builder()
-      .withBucket(RIAK_BUCKETS.USERS)
-      .withKey(user.id)
-      .withContent(user)
-      .build();
-
-    await this.executeRiakOperation(storeOp);
-  }
-
-  private executeRiakOperation(operation: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.client.execute(operation, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
+    const result = await this.usersRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
   }
 }

@@ -7,7 +7,7 @@ import { CompressionJob } from '../interfaces/compression-job.interface';
 import { FilesService } from '../../files/files.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FILE_STATUS } from '@common/constants';
-import { Chunk } from 'src/modules/files/interfaces/chunk.interface';
+import { Chunk } from 'src/modules/files/entities/chunk.entity';
 
 @Processor(QUEUES.COMPRESSION)
 export class CompressionProcessor {
@@ -45,7 +45,7 @@ export class CompressionProcessor {
       const totalChunks = Math.ceil(
         compressedFileData.length / file.chunks[0].size,
       );
-      const newChunks: Chunk[] = [];
+      const newChunks: any = [];
 
       for (let i = 0; i < totalChunks; i++) {
         const start = i * file.chunks[0].size;
@@ -55,7 +55,7 @@ export class CompressionProcessor {
         );
         const chunkData = compressedFileData.slice(start, end);
 
-        const newChunk: Chunk = {
+        const newChunk = {
           id: uuidv4(),
           fileId: file.id,
           index: i,

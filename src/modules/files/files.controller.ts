@@ -21,6 +21,7 @@ import { UpdateFileDto } from './dto/update-file.dto';
 import { SignedUrlDto } from './dto/signed-url.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Public } from '@common/decorators/public.decorator';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('files')
 @UseGuards(JwtAuthGuard)
@@ -28,11 +29,20 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new file' })
+  @ApiResponse({ status: 201, description: 'File created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid input' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 413, description: 'Payload too large' })
+  @ApiBody({ type: CreateFileDto })
   create(@Body() createFileDto: CreateFileDto, @Req() req) {
     return this.filesService.create(createFileDto, req.user.id);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all files for the current user' })
+  @ApiResponse({ status: 200, description: 'List of files' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   findAll(@Req() req) {
     return this.filesService.findAll(req.user.id);
   }
