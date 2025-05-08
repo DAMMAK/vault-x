@@ -1,202 +1,286 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="http://nestjs.com/" target="_blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<p align="center">
+  A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.
+</p>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+<p align="center">
+  <!-- Add badges for npm version, license, downloads, CircleCI, Discord, Open Collective, PayPal, Twitter -->
+  <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+  <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+  <a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+  <a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+  <a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+  <a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
   <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
 
 # VaultX
 
-A scalable, secure, and highly available object storage solution designed to store, manage, and retrieve large volumes of unstructured data efficiently. This system supports multi-region replication, chunk-based storage, secure access controls, data compression, and deduplication, making it a competitive alternative to cloud-based solutions like AWS S3.
+VaultX is a scalable, secure, and highly available object storage solution designed for efficiently storing, managing, and retrieving large volumes of unstructured data. Featuring multi-region replication, chunk-based storage, advanced security controls (including temporary signed URLs), data compression, and deduplication, VaultX is a robust alternative to cloud-based storage solutions.
 
-## Features
+---
 
-- **Multi-Region Support with Replication**
+## Table of Contents
 
-  - Data replication across multiple regions for high availability
-  - Configurable replication policies
-  - Support for both eventual and strong consistency models
-  - Automatic failover and disaster recovery
+- [Key Features](#key-features)
+- [Architecture Overview](#architecture-overview)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+- [API Documentation](#api-documentation)
+- [Usage Examples](#usage-examples)
+  - [Managing Files](#managing-files)
+  - [Replication Policies](#replication-policies)
+- [Development](#development)
+  - [Running in Development Mode](#running-in-development-mode)
+  - [Running Tests](#running-tests)
+- [Deployment](#deployment)
+  - [Docker Deployment](#docker-deployment)
+  - [Kubernetes & Cloud Providers](#kubernetes--cloud-providers)
+- [Monitoring & Maintenance](#monitoring--maintenance)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+- [Roadmap](#roadmap)
+- [Acknowledgments](#acknowledgments)
 
-- **Chunk-Based Storage for Large Files**
+---
 
-  - Large files are divided into smaller, fixed-size chunks
-  - Distributed storage across multiple nodes
-  - Parallel uploads and downloads for improved performance
-  - Automatic reassembly upon retrieval
+## Key Features
+
+- **Multi-Region Replication**
+  - Replicate data across multiple geographic regions for high availability.
+  - Configurable replication policies with support for eventual and strong consistency models.
+  - Automatic failover and disaster recovery mechanisms.
+
+- **Chunk-Based Storage**
+  - Files are split into fixed-size chunks (default: 5MB) to improve upload and download performance.
+  - Supports parallel transfers and automatic reassembly during retrieval.
+  - Integrity is maintained via hash validation for each chunk.
 
 - **Secure Access via Signed URLs**
+  - Generate temporary, signed URLs to securely access files.
+  - Configurable expiration and embedded permission data.
+  - Detailed access logging for auditing purposes.
 
-  - Temporary signed URLs for controlled access
-  - Fine-grained permission settings
-  - Integration with authentication and authorization
-  - Access logging and monitoring
-
-- **Data Compression and Deduplication**
-
-  - Automatic compression to reduce storage costs
-  - Content-aware deduplication to avoid redundant storage
-  - Hash-based indexing for efficient duplicate detection
-  - Background processing to optimize storage
+- **Data Compression & Deduplication**
+  - Automatic compression to reduce storage costs.
+  - Deduplication logic ensures that duplicate data is not redundantly stored.
+  - Background processing jobs (powered by BullMQ and Redis) optimize file storage.
 
 - **Advanced Features**
-  - File versioning and version control
-  - File tagging and metadata management
-  - Archiving and lifecycle management
-  - Comprehensive audit logging
-  - Quota management
+  - **File Versioning:** Maintain version history and enable rollbacks.
+  - **Metadata & Tagging:** Advanced file tagging and custom metadata management.
+  - **Audit Logging & Quota Management:** Comprehensive logging and resource management controls.
 
-## Technology Stack
-
-- **NestJS**: Modern, progressive Node.js framework
-- **Riak KV**: Distributed NoSQL database for reliable storage
-- **BullMQ**: Redis-based queue for background job processing
-- **Docker & Docker Compose**: Containerization and orchestration
-
-## Requirements
-
-- Node.js (v18 or higher)
-- Docker and Docker Compose
-- Redis (for BullMQ)
-- Riak KV
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/your-username/distributed-file-storage.git
-cd distributed-file-storage
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Create a `.env` file based on the example:
-
-```bash
-cp .env.example .env
-```
-
-4. Start the application using Docker Compose:
-
-```bash
-docker-compose up -d
-```
+---
 
 ## Architecture Overview
 
-The system consists of several key components:
+VaultX is modular, comprising the following components:
 
-- **API Layer**: RESTful APIs for client integration
-- **Storage Nodes**: Distributed file storage nodes
-- **Metadata Service**: Tracks object locations and access controls
-- **Replication Engine**: Ensures multi-region data synchronization
-- **Security Module**: Manages signed URLs, encryption, and access control
-- **Monitoring & Logging**: Tracks system performance and user activity
+- **API Layer:**  
+  Provides RESTful endpoints for file management, authentication, and administration.
 
-## API Endpoints
+- **Storage Nodes:**  
+  Distributed nodes that handle the chunk-based storage and rapid retrieval of files.
+
+- **Metadata Service:**  
+  Manages file-chunk associations, file versions, and custom metadata related to each file.
+
+- **Replication Engine:**  
+  Orchestrates cross-region data replication with configurable policies.
+
+- **Security Module:**  
+  Handles JWT authentication, signed URL generation, and advanced access control.
+
+- **Background Processing Jobs:**  
+  Uses BullMQ (with Redis) to perform resource-intensive tasks such as compression, deduplication, and replication as asynchronous background jobs.
+
+- **Monitoring & Logging:**  
+  Integrated Prometheus metrics and structured logging (using Winston) provide full observability and health checks.
+
+---
+
+## Technology Stack
+
+- **Framework:** [NestJS](https://nestjs.com/)
+- **Database:** PostgreSQL (managed via TypeORM)
+- **Cache & Queues:** Redis (for BullMQ and caching)
+- **Job Processing:** BullMQ for asynchronous background tasks
+- **Containerization:** Docker & Docker Compose; Kubernetes for production deployments
+- **Other Libraries:** Helmet for security, Joi for configuration validation, and Winston for logging.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js:** v18+  
+- **Docker & Docker Compose:** For container orchestration  
+- **Redis:** Required for background job queue processing  
+- **PostgreSQL:** Used for metadata storage  
+
+### Installation
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/your-username/vault-x.git
+   cd vault-x
+   ```
+
+2. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Environment Configuration:**
+
+   Create a `.env` file at the project root (or use the provided `.env.example` as a starting point):
+
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Database & Messaging Setup:**
+
+   Ensure PostgreSQL and Redis are running (or use Docker Compose to set them up).
+
+### Configuration
+
+VaultX’s configuration is managed through environment variables specified in the `.env` file. Example configuration:
+
+```
+# Application
+NODE_ENV=development
+PORT=3000
+
+# Database
+DB_HOST=postgres
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=password
+DB_NAME=vault_x
+
+# JWT Settings
+jwt.secret=your_jwt_secret
+jwt.expirationTime=3600s
+
+# Redis Settings
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+# File Storage
+CHUNK_SIZE=5242880
+
+# BullMQ
+BULL_CONCURRENCY=5
+
+# Circuit Breaker
+CIRCUIT_BREAKER_FAILURE_THRESHOLD=5
+CIRCUIT_BREAKER_RESET_TIMEOUT=30000
+```
+
+---
+
+## API Documentation
+
+VaultX exposes a variety of REST endpoints. Key endpoints include:
 
 ### Authentication
+- **POST** `/api/auth/register` – Register a new user.
+- **POST** `/api/auth/login` – Authenticate and obtain an access token.
 
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login and get access token
-
-### Files
-
-- `POST /api/files` - Create a new file entry
-- `GET /api/files` - List all files for current user
-- `GET /api/files/:id` - Get file details
-- `PATCH /api/files/:id` - Update file metadata
-- `DELETE /api/files/:id` - Delete a file
-- `POST /api/files/:id/chunks/:index` - Upload a file chunk
-- `POST /api/files/:id/signed-url` - Generate a signed URL
-- `GET /api/files/download/:signedUrl` - Download a file using signed URL
-- `POST /api/files/:id/versions` - Create a new version
-- `GET /api/files/:id/versions` - Get version history
-- `POST /api/files/:id/archive` - Archive a file
-- `POST /api/files/:id/restore-archive` - Restore an archived file
-- `POST /api/files/:id/tags` - Add tags to a file
-- `DELETE /api/files/:id/tags/:tag` - Remove a tag
-- `POST /api/files/:id/metadata` - Update custom metadata
-- `GET /api/files/stats/usage` - Get storage usage statistics
-- `GET /api/files/search` - Advanced file search
+### Files Management
+- **POST** `/api/files` – Create a new file entry.
+- **GET** `/api/files` – List all files for the authenticated user.
+- **GET** `/api/files/:id` – Retrieve details for a specific file.
+- **PATCH** `/api/files/:id` – Update file metadata.
+- **DELETE** `/api/files/:id` – Delete a file.
+- **POST** `/api/files/:id/chunks/:index` – Upload file chunks.
+- **POST** `/api/files/:id/signed-url` – Generate a temporary signed URL.
+- **GET** `/api/files/download/:signedUrl` – Download a file using a signed URL.
+- **POST** `/api/files/:id/versions` – Create a new file version.
+- **GET** `/api/files/:id/versions` – Retrieve file version history.
+- **POST** `/api/files/:id/archive` – Archive a file.
+- **POST** `/api/files/:id/restore-archive` – Restore an archived file.
+- **POST** `/api/files/:id/tags` – Add tags to a file.
+- **DELETE** `/api/files/:id/tags/:tag` – Remove a tag.
+- **POST** `/api/files/:id/metadata` – Update custom metadata.
+- **GET** `/api/files/stats/usage` – Get storage usage statistics.
+- **GET** `/api/files/search` – Advanced file search.
 
 ### Storage Management
-
-- `POST /api/storage/regions` - Create a storage region
-- `GET /api/storage/regions` - List all regions
-- `GET /api/storage/regions/:id` - Get region details
-- `PATCH /api/storage/regions/:id/deactivate` - Deactivate a region
-- `POST /api/storage/nodes` - Add a storage node
-- `GET /api/storage/nodes` - List all storage nodes
-- `GET /api/storage/regions/:regionId/nodes` - List nodes in a region
+- **POST** `/api/storage/regions` – Create a new storage region.
+- **GET** `/api/storage/regions` – List all regions.
+- **GET** `/api/storage/regions/:id` – Retrieve details for a region.
+- **PATCH** `/api/storage/regions/:id/deactivate` – Deactivate a region.
+- **POST** `/api/storage/nodes` – Add a new storage node.
+- **GET** `/api/storage/nodes` – List all storage nodes.
+- **GET** `/api/storage/regions/:regionId/nodes` – List nodes for a specific region.
 
 ### Replication
+- **POST** `/api/replication/files/:fileId/policy` – Create a replication policy.
+- **GET** `/api/replication/files/:fileId/status` – Check the replication status of a file.
 
-- `POST /api/replication/files/:fileId/policy` - Create replication policy
-- `GET /api/replication/files/:fileId/status` - Get replication status
+### Health Checks & Metrics
+- **GET** `/health` – Overall system health.
+- **GET** `/health/liveness` – Liveness probe.
+- **GET** `/health/readiness` – Readiness probe.
+- **GET** `/health/metrics` – Performance and custom metrics.
+
+---
 
 ## Usage Examples
 
-### Creating a File
+### Managing Files
 
-1. Create a file entry:
+1. **Create a File Entry:**
 
-```bash
-curl -X POST http://localhost:3000/api/files \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "important-document",
-    "originalName": "important-document.pdf",
-    "mimeType": "application/pdf",
-    "size": 1048576,
-    "compressionEnabled": true,
-    "deduplicationEnabled": true
-  }'
-```
+   ```bash
+   curl -X POST http://localhost:3000/api/files \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "important-document",
+       "originalName": "important-document.pdf",
+       "mimeType": "application/pdf",
+       "size": 1048576,
+       "compressionEnabled": true,
+       "deduplicationEnabled": true
+     }'
+   ```
 
-2. Upload file chunks:
+2. **Upload File Chunks:**
 
-```bash
-curl -X POST http://localhost:3000/api/files/FILE_ID/chunks/0 \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: multipart/form-data" \
-  -F "chunk=@/path/to/chunk0.bin"
-```
+   ```bash
+   curl -X POST http://localhost:3000/api/files/FILE_ID/chunks/0 \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -H "Content-Type: multipart/form-data" \
+     -F "chunk=@/path/to/chunk0.bin"
+   ```
 
-3. Generate a signed URL for download:
+3. **Generate a Signed URL for Download:**
 
-```bash
-curl -X POST http://localhost:3000/api/files/FILE_ID/signed-url \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "expirationSeconds": 3600
-  }'
-```
+   ```bash
+   curl -X POST http://localhost:3000/api/files/FILE_ID/signed-url \
+     -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "expirationSeconds": 3600
+     }'
+   ```
 
 ### Creating a Replication Policy
 
@@ -209,66 +293,13 @@ curl -X POST http://localhost:3000/api/replication/files/FILE_ID/policy \
   }'
 ```
 
-## Advanced Configuration
-
-### Scaling Options
-
-The system can be scaled horizontally by adding more instances of:
-
-- API servers behind a load balancer
-- Worker nodes for processing jobs
-- Riak nodes for increased storage capacity
-- Redis instances for distributed caching
-
-### Performance Tuning
-
-Key configuration parameters in `.env`:
-
-```
-# Chunk size for file splitting (in bytes)
-CHUNK_SIZE=5242880
-
-# Redis configuration for caching
-REDIS_CACHE_TTL=300
-
-# BullMQ concurrency
-BULL_CONCURRENCY=5
-
-# Circuit breaker settings
-CIRCUIT_BREAKER_FAILURE_THRESHOLD=5
-CIRCUIT_BREAKER_RESET_TIMEOUT=30000
-```
-
-## Monitoring and Maintenance
-
-### Health Checks
-
-The system provides health check endpoints:
-
-- `/health` - Overall system health
-- `/health/liveness` - Server availability
-- `/health/readiness` - System readiness
-- `/health/metrics` - Performance metrics
-
-### Backup and Recovery
-
-For data safety, implement regular backups:
-
-1. Backup Riak data using snapshots
-2. Export metadata periodically
-3. Set up a disaster recovery plan with multi-region replication
-
-## Security Considerations
-
-- All API endpoints are secured with JWT authentication
-- File access is controlled through signed URLs with expiration
-- Sensitive operations use idempotency keys for safe retries
-- Circuit breakers prevent cascade failures
-- Rate limiting protects against abuse
+---
 
 ## Development
 
 ### Running in Development Mode
+
+Launch the project in development mode with hot-reloading:
 
 ```bash
 npm run start:dev
@@ -276,22 +307,29 @@ npm run start:dev
 
 ### Running Tests
 
-```bash
-# Unit tests
-npm run test
+VaultX comes with both unit and end-to-end tests:
 
-# E2E tests
-npm run test:e2e
+- **Unit Tests:**
 
-# Test coverage
-npm run test:cov
-```
+  ```bash
+  npm run test
+  ```
+
+- **End-to-End Tests:**
+
+  ```bash
+  npm run test:e2e
+  ```
+
+- **Test Coverage:**
+
+  ```bash
+  npm run test:cov
+  ```
+
+---
 
 ### Code Structure
-
-# Distributed File Storage System (continued)
-
-### Code Structure (continued)
 
 ```
 distributed-file-storage/
@@ -360,179 +398,129 @@ distributed-file-storage/
     └── jest-e2e.json
 ```
 
-## Technical Implementation Details
+---
 
-### Chunk-Based Storage
-
-Files are divided into smaller chunks (default: 5MB) for more efficient storage and transfer:
-
-- Each chunk is uniquely identified and can be stored on different nodes
-- Chunks are stored with their hash for integrity verification
-- Parallel upload/download of chunks improves performance
-- Reassembly happens automatically when downloading
-
-### Multi-Region Replication
-
-Data can be replicated across multiple geographic regions:
-
-- Each region contains multiple storage nodes
-- Replication policies define which regions store which files
-- Background jobs handle the replication process
-- Consistency models (eventual or strong) can be configured
-
-### Deduplication System
-
-The system avoids storing duplicate data:
-
-- Content-based deduplication using SHA-256 hashes
-- Works at both file and chunk levels
-- Reference counting tracks how many files use each chunk
-- Significant storage savings for similar files
-
-### Secure Access Control
-
-File access is secured through temporary signed URLs:
-
-- URLs contain cryptographic signatures that verify authenticity
-- Expiration times limit how long a URL remains valid
-- User IDs embedded in URLs ensure only authorized users can access
-- All access attempts are logged for security auditing
-
-### Background Processing
-
-Resource-intensive tasks run asynchronously using BullMQ:
-
-- Upload processing calculates hashes and prepares files
-- Replication jobs copy data between regions
-- Compression jobs reduce file sizes
-- Deduplication jobs identify and eliminate duplicates
-
-### Error Handling and Resilience
-
-The system is designed to handle failures gracefully:
-
-- Circuit breakers prevent cascade failures
-- Idempotent operations allow safe retries
-- Distributed locking prevents race conditions
-- Graceful shutdown ensures data integrity during restarts
-
-## Performance Considerations
-
-### Optimizing for Large Files
-
-The chunk-based approach offers several advantages for large files:
-
-- Memory usage remains constant regardless of file size
-- Failed transfers can resume from the last successful chunk
-- Parallel processing improves throughput
-- Deduplication is more effective at the chunk level
-
-### Caching Strategy
-
-The system implements a multi-level caching strategy:
-
-- In-memory cache for frequently accessed metadata
-- Redis cache for file chunks of popular files
-- Configurable TTL (Time-To-Live) for different cache levels
-
-### Database Tuning
-
-Riak KV configuration for optimal performance:
-
-- Proper node sizing based on expected storage volume
-- Consistent hashing for better data distribution
-- Tuned read/write parameters for your specific workload
-
-## Deployment Options
+## Deployment
 
 ### Docker Deployment
 
-The included Docker Compose file provides a quick way to start all required services:
+VaultX can be quickly launched using Docker Compose. The repository includes a `docker-compose.yml` file to set up the API server, PostgreSQL, pgAdmin, and Redis.
 
-```bash
-docker-compose up -d
-```
+1. **Build and Start Containers:**
 
-### Kubernetes Deployment
+   ```bash
+   docker-compose up -d
+   ```
 
-For production environments, Kubernetes is recommended:
+2. **Accessing the Services:**
+   - API Server: [http://localhost:3000](http://localhost:3000)
+   - pgAdmin: [http://localhost:8080](http://localhost:8080)  
+   - Redis: Running on port 6379
 
-1. Build container images:
+### Kubernetes & Cloud Providers
 
-```bash
-docker build -t distributed-file-storage:latest .
-```
+For production deployments using Kubernetes:
 
-2. Apply Kubernetes manifests (example):
+1. **Build the Docker Image:**
 
-```bash
-kubectl apply -f k8s/
-```
+   ```bash
+   docker build -t vault-x:latest .
+   ```
 
-### Cloud Provider Deployment
+2. **Deploy Kubernetes Manifests:**
 
-The system can be deployed on major cloud providers:
+   ```bash
+   kubectl apply -f k8s/
+   ```
 
-- **AWS**: Use ECS/EKS for containers, ElastiCache for Redis
-- **Azure**: Use AKS for containers, Azure Cache for Redis
-- **GCP**: Use GKE for containers, Memorystore for Redis
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Upload failures**: Check chunk size configuration and client timeout settings
-2. **Slow downloads**: Verify region selection and network connectivity
-3. **High memory usage**: Adjust worker concurrency and chunk processing settings
-4. **Database connection issues**: Check Riak cluster health and network configuration
-
-### Logging
-
-The system uses structured logging for easier troubleshooting:
-
-- Log levels can be configured in the `.env` file
-- Logs include request IDs for tracing requests across services
-- Error logs contain stack traces for debugging
-
-### Monitoring
-
-Key metrics to monitor:
-
-- Upload/download throughput
-- Storage utilization per region and node
-- Job queue lengths
-- Error rates by endpoint and operation type
-- Cache hit/miss ratios
-
-## Roadmap
-
-Future planned features:
-
-- **Client-Side Encryption**: Add end-to-end encryption
-- **Advanced Search**: Full-text search capabilities
-- **Event Webhooks**: Notify external systems of file events
-- **Multi-Cluster Support**: Expand beyond regions to multiple data centers
-- **AI-Powered Storage Optimization**: Intelligent tiering based on access patterns
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- NestJS team for the excellent framework
-- Basho for Riak KV
-- Bull team for the reliable queue implementation
-- All contributors who have helped shape this project
+VaultX can also be deployed on major cloud platforms:
+- **AWS:** ECS/EKS, ElastiCache for Redis.
+- **Azure:** AKS, Azure Cache for Redis.
+- **GCP:** GKE, Memorystore for Redis.
 
 ---
 
-For more information, please contact
+## Monitoring & Maintenance
+
+- **Health Checks:**  
+  Utilize endpoints `/health`, `/health/liveness`, and `/health/readiness` for monitoring.
+
+- **Metrics:**  
+  Integrated Prometheus metrics provide insights into system performance.
+
+- **Logging:**  
+  Structured logging using Winston includes request IDs and stack traces for in-depth troubleshooting.
+
+- **Backups:**  
+  Regular PostgreSQL data exports and persistence of job queues ensure data integrity and easy recovery.
+
+---
+
+## Troubleshooting
+
+- **File Upload/Download Issues:**  
+  Verify that chunk size configurations match across the client and server in your `.env` file, and inspect network connectivity.
+
+- **Performance Issues:**  
+  Monitor BullMQ job queues and adjust worker concurrency or chunk sizes as necessary.
+
+- **Database Connectivity:**  
+  Confirm that your PostgreSQL instance is running correctly and that the database configuration variables are set appropriately.
+
+- **Error Logging:**  
+  Review structured logs for detailed error messages along with request IDs to trace issues.
+
+---
+
+## Contributing
+
+Contributions are welcome! Follow these steps to contribute:
+
+1. **Fork the Repository**
+
+2. **Create a Feature Branch:**
+
+   ```bash
+   git checkout -b feature/your-new-feature
+   ```
+
+3. **Commit Your Changes:**  
+   Follow the established commit message conventions.
+
+4. **Push to Your Fork:**
+
+   ```bash
+   git push origin feature/your-new-feature
+   ```
+
+5. **Submit a Pull Request:**  
+   Provide a clear description of your changes and any related issues.
+
+For additional guidelines, refer to [Contributing Guidelines](CONTRIBUTING.md) if available.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Roadmap
+
+Planned future enhancements include:
+- **Client-Side Encryption:** Improved end-to-end encryption features.
+- **Advanced Search Capabilities:** Full-text and metadata-based search.
+- **Event Webhooks:** Real-time notifications for file operations.
+- **Multi-Cluster & Multi-Data Center Support:** Further scaling the storage backend.
+- **AI-Powered Storage Optimization:** Intelligent tiering based on usage patterns.
+
+---
+
+## Acknowledgments
+
+- Thanks to the [NestJS Team](https://nestjs.com/) for providing a robust framework.
+- Appreciation to the developers behind BullMQ, Redis, and PostgreSQL.
+- Many thanks to all contributors who continuously improve VaultX.
+
+
